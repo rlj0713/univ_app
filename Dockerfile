@@ -110,6 +110,21 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     # Clean up
     && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* /root/.gnupg /tmp/library-scripts
 
+# Install Ruby    
+
+USER ${USERNAME}
+
+COPY Gemfile /tmp/Gemfile
+
+RUN /bin/bash -c "\curl -sSL https://get.rvm.io | bash \
+    && source /home/node/.rvm/scripts/rvm \
+    && echo 'source /home/node/.rvm/scripts/rvm' >> ~/.bashrc \
+    && rvm install 2.6.1 \
+    && gem update --system \
+    && gem install bundler \
+    && bundle install --gemfile=/tmp/Gemfile"
+
+
 # [Optional] Uncomment this section to install additional OS packages.
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
